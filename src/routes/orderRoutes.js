@@ -9,7 +9,7 @@ const { createOrder,
  } = require("../controllers/orderController");
 
 router.post("/", authenticate, createOrder);
-router.post("/", authenticate, getMyOrders);
+router.get("/", authenticate, getMyOrders);
 
 
 module.exports = router;
