@@ -144,9 +144,56 @@ res.status(200).json({
 
 };
 
+const cancelOrder = async (req, res) => {
+    try {
+
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
+        }
+
+        if (order.customer.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied"
+            });
+        }
+
+        if (order.status !== "Pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Only pending orders can be cancelled"
+            });
+        }
+
+        order.status = "Cancelled";
+
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Order cancelled successfully",
+            order
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
+
 module.exports = {
     createOrder,
     getMyOrders,
     getOrderById,
-    updateOrder
+    updateOrder,
+    cancelOrder
 };
