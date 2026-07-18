@@ -1,5 +1,8 @@
 const Order = require("../models/Order");
-
+const User = require("../models/User");
+const sendEmail = require("../utils/sendEmail");
+console.log(process.env.EMAIL_USER);
+console.log(process.env.EMAIL_PASS ? "Password Loaded" : "Password Missing");
 const createOrder = async (req, res) => {
     try {
 
@@ -12,6 +15,31 @@ const createOrder = async (req, res) => {
             specialInstructions
         } = req.body;
 
+        // Price calculation
+        let pricePerKg = 0;
+
+        switch (laundryType) {
+            case "Wash":
+                pricePerKg = 50;
+                break;
+
+            case "Wash & Iron":
+                pricePerKg = 80;
+                break;
+
+            case "Dry Clean":
+                pricePerKg = 120;
+                break;
+
+            default:
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid laundry type"
+                });
+        }
+
+        const totalPrice = weight * pricePerKg;
+
         const order = await Order.create({
             customer: req.user.id,
             pickupAddress,
@@ -19,8 +47,39 @@ const createOrder = async (req, res) => {
             pickupTime,
             laundryType,
             weight,
-            specialInstructions
+            specialInstructions,
+            totalPrice
         });
+        const customer = await User.findById(req.user.id);
+
+await sendEmail(
+    customer.email,
+    "Laundry Order Confirmation",
+    `Hello ${customer.name},
+
+Your laundry order has been placed successfully.
+
+Order ID: ${order._id}
+
+Pickup Address: ${pickupAddress}
+
+Laundry Type: ${laundryType}
+
+Weight: ${weight} kg
+
+Pickup Date: ${pickupDate}
+
+Pickup Time: ${pickupTime}
+
+Total Amount: ₹${totalPrice}
+
+Current Status: Pending
+
+Thank you for choosing LaundryConnect!
+
+Regards,
+LaundryConnect Team`
+);
 
         res.status(201).json({
             success: true,

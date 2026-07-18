@@ -59,10 +59,32 @@ const orderSchema = new mongoose.Schema(
         default: "Pending"
     },
 
+ 
     totalPrice: {
-        type: Number,
-        default: 0
-    }
+    type: Number,
+    default: 0
+},
+
+paymentStatus: {
+    type: String,
+    enum: ["Pending", "Paid", "Failed"],
+    default: "Pending"
+},
+
+paymentMethod: {
+    type: String,
+    default: null
+},
+
+paymentId: {
+    type: String,
+    default: null
+},
+
+razorpayOrderId: {
+    type: String,
+    default: null
+}
 },
 {
     timestamps: true

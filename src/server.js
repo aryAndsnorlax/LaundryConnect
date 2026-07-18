@@ -1,10 +1,16 @@
+const dotenv = require("dotenv");
+dotenv.config();
+const express = require("express");
+
+const connectDB = require("./config/db");
 const orderRoutes = require("./routes/orderRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+
 const providerRoutes = require("./routes/providerRoutes");
 const authRoutes = require("./routes/authRoutes");
-const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
+
+
 
 dotenv.config();
 
@@ -18,6 +24,8 @@ app.use("/api/auth",authRoutes);
 app.use("/api/orders",orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/provider", providerRoutes);
+app.use("/api/payment", paymentRoutes);
+
 
 app.get("/", (req, res) => {
   res.send(" LaundryConnect Backend is Running!");

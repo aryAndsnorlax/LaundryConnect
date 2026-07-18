@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
-
+const sendEmail = require("../utils/sendEmail");
 const register = async (req, res) => {
     try {
 
@@ -38,6 +38,20 @@ const register = async (req, res) => {
             password: hashedPassword,
             role
         });
+        await sendEmail(
+    email,
+    "Welcome to LaundryConnect",
+    `Hello ${name},
+
+Welcome to LaundryConnect!
+
+Your account has been created successfully.
+
+We're excited to help you manage your laundry services.
+
+Thank you,
+LaundryConnect Team`
+);
 
         res.status(201).json({
             success: true,
