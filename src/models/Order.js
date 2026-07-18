@@ -7,6 +7,12 @@ const orderSchema = new mongoose.Schema(
         ref: "User",
         required: true
     },
+    provider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+},
+
 
     pickupAddress: {
         type: String,

@@ -5,7 +5,8 @@ const {
     getAllOrders,
     updateOrderStatus,
     getAllUsers,
-    getDashboardStats
+    getDashboardStats,
+    assignProvider
 } = require("../controllers/adminController");
 
 const { authenticate } = require("../middleware/authMiddleware");
@@ -26,12 +27,24 @@ router.patch(
     isAdmin,
     updateOrderStatus
 );
+
+// Assign provider to an order
+router.patch(
+    "/orders/:id/assign",
+    authenticate,
+    isAdmin,
+    assignProvider
+);
+
+// Get all users
 router.get(
     "/users",
     authenticate,
     isAdmin,
     getAllUsers
 );
+
+// Dashboard statistics
 router.get(
     "/dashboard",
     authenticate,

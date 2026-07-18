@@ -1,5 +1,6 @@
 const orderRoutes = require("./routes/orderRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const providerRoutes = require("./routes/providerRoutes");
 const authRoutes = require("./routes/authRoutes");
 const express = require("express");
 const dotenv = require("dotenv");
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/orders",orderRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/provider", providerRoutes);
 
 app.get("/", (req, res) => {
   res.send(" LaundryConnect Backend is Running!");

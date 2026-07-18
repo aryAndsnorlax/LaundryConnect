@@ -155,9 +155,54 @@ const getDashboardStats = async (req, res) => {
 
     }
 };
+const assignProvider = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        const { providerId } = req.body;
+
+        const provider = await User.findById(providerId);
+
+        if (!provider || provider.role !== "provider") {
+            return res.status(404).json({
+                success: false,
+                message: "Provider not found."
+            });
+        }
+
+        const order = await Order.findById(id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found."
+            });
+        }
+
+        order.provider = providerId;
+        order.status = "Pickup Scheduled";
+
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Provider assigned successfully.",
+            order
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
 module.exports = {
     getAllOrders,
     updateOrderStatus,
     getAllUsers,
-    getDashboardStats
+    getDashboardStats,
+    assignProvider
 };
